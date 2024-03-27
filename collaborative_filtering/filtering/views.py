@@ -27,8 +27,8 @@ def admin_profile_view(request):
 
     return render(request,template_name)
 
-def recomendations_view(request):
-    template_name = "filtering/recomendations.html"
+def recommendations_view(request):
+    template_name = "filtering/recommendations.html"
 
     return render(request,template_name)
 
