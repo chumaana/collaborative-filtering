@@ -1,13 +1,9 @@
-from django.shortcuts import render
-
-# # Create your views here.
-# def login(request):
-#     # return render(request, "filtering/login.html")
+from django.shortcuts import render, redirect
 
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
-
+from filtering.forms import RegisterForm
 
 class MyLogin(LoginView):
     redirect_authenticated_user = True
@@ -35,3 +31,12 @@ def recomendations_view(request):
     template_name = "filtering/recomendations.html"
 
     return render(request,template_name)
+
+
+def register_view(request):
+    template_name = "filtering/registration.html"
+    if request.method == 'GET':
+        form = RegisterForm()
+    return render(request,template_name, {"form": form})
+ 
+         
