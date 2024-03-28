@@ -17,3 +17,6 @@ class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="review")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review")
     rate = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(0)])
+
+    def __str__(self) -> str:
+        return f"Review: user-{self.user.username}, book-{self.book.name}, rate-{self.rate}"
