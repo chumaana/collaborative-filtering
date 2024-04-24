@@ -51,9 +51,8 @@ def test_core(request):
     print("It is test_core function!")
     reviews = request.user.review.all()
     # print(reviews)
-    comparison = main.calculate_similarity(request.user)
-    main.calculate_recommendation(comparison)
-    context = {"reviews": reviews, "user": request.user}
+    rec_books = main.recommend_user(request.user)
+    context = {"reviews": reviews, "user": request.user, "recommend_books": rec_books}
     return render(request, "index.html", context)
 from django.shortcuts import render
 from filtering import main
