@@ -1,26 +1,47 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth.views import LoginView
+from filtering.forms import RegisterForm,LoginForm
+from django.contrib.auth import logout,login,authenticate
+from django.views.generic import FormView
 from django.urls import reverse_lazy
-from django.contrib import messages
-from filtering.forms import RegisterForm
 from filtering import main
+from filtering.models import User
 
-class MyLogin(LoginView):
-    redirect_authenticated_user = True
+
+class LoginView(FormView):
     template_name = "filtering/login.html"
+    form_class = LoginForm
+    success_url = reverse_lazy('start')
+    
+    def form_valid(self, form:LoginForm):  
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
 
+        user = authenticate(self.request, username=username, password=password)
+        print(user)
+        if user is not None:
+            login(self.request, user)    
+            return super().form_valid(form)
+        else:
+            print("hui")
+            form.add_error(None, "Invalid username or password")
+            return self.form_invalid(form)
+
+
+def logout_view(request):
+    template_name = "filtering/logout.html"
+    render(request,template_name)
+    print(request.user)
+
+    logout(request)
+    print("out",request.user)
+
+    return redirect(reverse_lazy('login'))
     
-    def get_success_url(self):
-        return reverse_lazy('tasks') 
-    
-    def form_invalid(self, form):
-        messages.error(self.request,'Invalid username or password')
-        return self.render_to_response(self.get_context_data(form=form))
 
 def start_user_page_view(request):
     template_name = "filtering/startUserPage.html"
-
+    model=User
     return render(request,template_name)
 
 def admin_profile_view(request):
@@ -41,34 +62,6 @@ def register_view(request):
     return render(request,template_name, {"form": form})
  
          
-from django.http import HttpResponse
-from django.shortcuts import render
-from filtering import main
-
-
-# Create your views here.
-def test_core(request):
-    print("It is test_core function!")
-    reviews = request.user.review.all()
-    # print(reviews)
-    comparison = main.calculate_similarity(request.user)
-    main.calculate_recommendation(comparison)
-    context = {"reviews": reviews, "user": request.user}
-    return render(request, "index.html", context)
-from django.shortcuts import render
-from filtering import main
-
-
-# Create your views here.
-def test_core(request):
-    print("It is test_core function!")
-    reviews = request.user.review.all()
-    # print(reviews)
-    comparison = main.calculate_similarity(request.user)
-    main.calculate_recommendation(comparison)
-    context = {"reviews": reviews, "user": request.user}
-    return render(request, "index.html", context)
-
 
 
 # Create your views here.
