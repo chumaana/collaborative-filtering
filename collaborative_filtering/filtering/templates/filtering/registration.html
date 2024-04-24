@@ -9,7 +9,7 @@
     <form method="POST" novalidate class="card">
         {% csrf_token %}
         <h2 class="card_item">Sign Up</h2>
-        <div class="register_generated">{{ form.as_p }}</div>
+        <div class="register_generated">{{ form }}</div>
         <input class="card_item" type="submit" value="Register" />
         <p class="text-center card_item">Already have an account? <a href="../login/">Log in</a></p>
     </form>

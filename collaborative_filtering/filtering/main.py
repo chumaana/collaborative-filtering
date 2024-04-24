@@ -1,6 +1,6 @@
 import numpy as np
 from filtering.algorithms import algorithms
-from filtering.models import Book, User
+from filtering.models import Book, User,Review
 
 
 def get_book(queryset):
@@ -75,3 +75,6 @@ def calculate_recommendation(comparison):
     #     comp_user = item[0]
     #     similarity = item[1]
     #     diff_books = item[2]
+
+
+
