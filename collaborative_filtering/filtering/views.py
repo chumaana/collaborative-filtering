@@ -6,8 +6,9 @@ from filtering import main
 # Create your views here.
 def test_core(request):
     print("It is test_core function!")
-    reviews = main.got_users_review_l(request.user.username)
+    reviews = request.user.review.all()
     # print(reviews)
-    main.calculate_similarity(request.user)
+    comparison = main.calculate_similarity(request.user)
+    main.calculate_recommendation(comparison)
     context = {"reviews": reviews, "user": request.user}
     return render(request, "index.html", context)
