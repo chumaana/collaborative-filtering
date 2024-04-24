@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from filtering.forms import RegisterForm
+from filtering import main
 
 class MyLogin(LoginView):
     redirect_authenticated_user = True
@@ -40,3 +41,42 @@ def register_view(request):
     return render(request,template_name, {"form": form})
  
          
+from django.http import HttpResponse
+from django.shortcuts import render
+from filtering import main
+
+
+# Create your views here.
+def test_core(request):
+    print("It is test_core function!")
+    reviews = request.user.review.all()
+    # print(reviews)
+    comparison = main.calculate_similarity(request.user)
+    main.calculate_recommendation(comparison)
+    context = {"reviews": reviews, "user": request.user}
+    return render(request, "index.html", context)
+from django.shortcuts import render
+from filtering import main
+
+
+# Create your views here.
+def test_core(request):
+    print("It is test_core function!")
+    reviews = request.user.review.all()
+    # print(reviews)
+    comparison = main.calculate_similarity(request.user)
+    main.calculate_recommendation(comparison)
+    context = {"reviews": reviews, "user": request.user}
+    return render(request, "index.html", context)
+
+
+
+# Create your views here.
+def test_core(request):
+    print("It is test_core function!")
+    reviews = request.user.review.all()
+    # print(reviews)
+    comparison = main.calculate_similarity(request.user)
+    main.calculate_recommendation(comparison)
+    context = {"reviews": reviews, "user": request.user}
+    return render(request, "index.html", context)
