@@ -1,16 +1,16 @@
 import numpy as np
 from filtering.algorithms import algorithms
-from filtering.models import Book, User
+from filtering.models import Book, Review, User
 
 
-def get_book(queryset):
+def get_book(queryset) -> set:
     filtered_set = set()
     for item in queryset:
         filtered_set.add((item.book))
     return filtered_set
 
 
-def get_users_reviews():
+def get_users_reviews() -> list:
     users = User.objects.all()
     users_reviews = []
     for user in users:
@@ -21,57 +21,86 @@ def get_users_reviews():
     return users_reviews
 
 
+def get_avg_rate(user):
+    sum_rate = 0
+    for review in user.review.all():
+        sum_rate += review.rate
+    return sum_rate / user.review.count()
+
+
 def calculate_similarity(user):
-    # print(all_reviews.values_list())
-    curr_user_reviews = user.review.all()
-    filtered_user_reviews = get_book(
-        curr_user_reviews
-    )  # only books reviewed by current user
+    # user_reviewed_books = get_book(
+    #     user.review.all()
+    # )  # only books reviewed by current user
+    user_reviewed_books = set(Book.objects.filter(review__user=user))
+    print(user_reviewed_books)
     filtered_all_reviews = get_users_reviews()  # (user, books) reviewed by all users
-    comparison = []
+    comparison = {}
 
     for review in filtered_all_reviews:
         compered_user = review[0]  # user from all users
         if user == compered_user:
             continue
-        compere_review = review[1]  # books of that user
-        same_books = filtered_user_reviews.intersection(
-            compere_review
+        compere_books = review[1]  # books of that user
+        same_books = user_reviewed_books.intersection(
+            compere_books
         )  # set(book) intersection of curr user books and second user
-        different_books = compere_review.difference(same_books)
+        different_books = compere_books.difference(same_books)
+
         u1 = []  # array of (book, rate) for current user
         u2 = []  # array of (book, rate) for second user
-        for book in same_books:
-            u1_review = user.review.get(book=book)
-            u1.append((u1_review.book, u1_review.rate))
-            u2_review = compered_user.review.get(book=book)
-            u2.append((u2_review.book, u2_review.rate))
+        if same_books:
+            for book in same_books:
+                u1_review = user.review.get(book=book)
+                u1.append(u1_review.rate)
+                u2_review = compered_user.review.get(book=book)
+                u2.append(u2_review.rate)
 
-        # print(f"u1: {u1}, u2: {u2}\n")
-        similarity = algorithms.cosine_similarity(u1, u2)
-        # print(similarity)
-        # print("my rates:", u1, "\n")
-        # print("comp_user rates:", u2, "\n")
-        # print(f"same books with {compered_user}: {same_books}\n\n")
-        # print(f"similarity between {user} and {compered_user} is: {similarity}")
+            # print(f"u1: {u1}, u2: {u2}\n")
 
-        comparison.append((compered_user, similarity, different_books))
+            cos_similarity = algorithms.cosine_similarity(u1, u2)
+            similarity = algorithms.cosine_similarity(u1, u2)
+            pear_similarity = algorithms.pearson_correlation(u1, u2)
+            spear_similarity = algorithms.spearman_rank_correlation(u1, u2)
+            print(f"cos sim with {compered_user} is {cos_similarity}")
+            print(f"pear sim with {compered_user} is {pear_similarity}")
+            print(f"spear sim with {compered_user} is {spear_similarity}\n")
 
-    comparison.sort(key=lambda x: x[1], reverse=True)
-    print(comparison)
+        comparison[compered_user] = (similarity, different_books)
+
+    # comparison.sort(key=lambda x: x[1], reverse=True)
+    # print(comparison)
     return comparison
 
 
-def calculate_recommendation(comparison):
-    all_reviewed_books = []
-    for book in Book.objects.all():
-        book_reviews = book.review.all()
-        if book_reviews:
-            all_reviewed_books.append((False, book))
-        else:
-            print("empty set")
+def calculate_recommendation(comparison, user):
+    # check if there are enough users
+    user_unread_books_dict = {}
 
-    # for item in comparison:
-    #     comp_user = item[0]
-    #     similarity = item[1]
-    #     diff_books = item[2]
+    user_books = set(Book.objects.filter(review__user=user))
+    user_unread_books = set(Book.objects.all()).difference(user_books)
+
+    predicted_ratings = {}
+    predicted_rate = 0
+
+    for book in user_unread_books:
+        book_reviews = Review.objects.filter(book=book)
+        if book_reviews:
+            for review in book_reviews:
+                if review.user == None:
+                    continue
+                similarity = comparison[review.user][0]
+                avg_rate = get_avg_rate(review.user)
+                predicted_rate += (review.rate - avg_rate) * similarity
+
+            predicted_ratings[book] = predicted_rate + get_avg_rate(user)
+
+    return predicted_ratings
+
+
+def recommend_user(user):
+    comparison = calculate_similarity(user)
+    pred_ratings = calculate_recommendation(comparison, user)
+
+    sorted_books = sorted(pred_ratings.items(), key=lambda item: item[1], reverse=True)
+    return sorted_books

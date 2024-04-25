@@ -2,22 +2,24 @@ import numpy as np
 
 
 def cosine_similarity(book_ratings1, book_ratings2):
-    ratings1 = np.array([rating for _, rating in book_ratings1])
-    ratings2 = np.array([rating for _, rating in book_ratings2])
+    ratings1 = np.array(book_ratings1)
+    ratings2 = np.array(book_ratings2)
 
     dot_product = np.dot(ratings1, ratings2)
     norm_ratings1 = np.linalg.norm(ratings1)
     norm_ratings2 = np.linalg.norm(ratings2)
 
-    similarity = dot_product / (norm_ratings1 * norm_ratings2)
-
-    return similarity
+    if dot_product == (norm_ratings1 * norm_ratings2):
+        return 1.0
+    else:
+        return dot_product / (norm_ratings1 * norm_ratings2)
 
 
 def pearson_correlation(book_ratings1, book_ratings2):
-    ratings1 = np.array([rating for _, rating in book_ratings1])
-    ratings2 = np.array([rating for _, rating in book_ratings2])
+    ratings1 = np.array(book_ratings1)
+    ratings2 = np.array(book_ratings2)
 
+    # covariance = np.cov(ratings1, ratings2)
     mean_ratings1 = np.mean(ratings1)
     mean_ratings2 = np.mean(ratings2)
 
@@ -25,15 +27,16 @@ def pearson_correlation(book_ratings1, book_ratings2):
     std_ratings2 = np.std(ratings2)
 
     covariance = np.mean((ratings1 - mean_ratings1) * (ratings2 - mean_ratings2))
-
-    correlation = covariance / (std_ratings1 * std_ratings2)
-
-    return correlation
+    # print(f"{covariance=}")
+    if covariance == (std_ratings1 * std_ratings2):
+        return 1.0
+    else:
+        return covariance / (std_ratings1 * std_ratings2)
 
 
 def spearman_rank_correlation(book_ratings1, book_ratings2):
-    ratings1 = np.array([rating for _, rating in book_ratings1])
-    ratings2 = np.array([rating for _, rating in book_ratings2])
+    ratings1 = np.array(book_ratings1)
+    ratings2 = np.array(book_ratings2)
 
     rank_ratings1 = np.argsort(ratings1)
     rank_ratings2 = np.argsort(ratings2)
@@ -51,16 +54,3 @@ def spearman_rank_correlation(book_ratings1, book_ratings2):
     correlation = 1 - (6 * squared_diff) / (len(ratings1) * (len(ratings1) ** 2 - 1))
 
     return correlation
-
-
-# book_ratings1 = [(1, 4), (2, 4), (3, 3), (4, 2), (5, 4)]
-# book_ratings2 = [(1, 4), (2, 4), (3, 3), (4, 2), (5, 5)]
-
-# cosine_sim = cosine_similarity(book_ratings1, book_ratings2)
-# print("Cosine Similarity:", cosine_sim)
-
-# pearson_corr = pearson_correlation(book_ratings1, book_ratings2)
-# print("Pearson Correlation Coefficient:", pearson_corr)
-
-# spearman_corr = spearman_rank_correlation(book_ratings1, book_ratings2)
-# print("Spearman Rank Correlation Coefficient:", spearman_corr)
