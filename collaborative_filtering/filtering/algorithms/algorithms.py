@@ -9,15 +9,17 @@ def cosine_similarity(book_ratings1, book_ratings2):
     norm_ratings1 = np.linalg.norm(ratings1)
     norm_ratings2 = np.linalg.norm(ratings2)
 
-    similarity = dot_product / (norm_ratings1 * norm_ratings2)
-
-    return similarity
+    if dot_product == (norm_ratings1 * norm_ratings2):
+        return 1.0
+    else:
+        return dot_product / (norm_ratings1 * norm_ratings2)
 
 
 def pearson_correlation(book_ratings1, book_ratings2):
     ratings1 = np.array(book_ratings1)
     ratings2 = np.array(book_ratings2)
 
+    # covariance = np.cov(ratings1, ratings2)
     mean_ratings1 = np.mean(ratings1)
     mean_ratings2 = np.mean(ratings2)
 
@@ -25,10 +27,11 @@ def pearson_correlation(book_ratings1, book_ratings2):
     std_ratings2 = np.std(ratings2)
 
     covariance = np.mean((ratings1 - mean_ratings1) * (ratings2 - mean_ratings2))
-
-    correlation = covariance / (std_ratings1 * std_ratings2)
-
-    return correlation
+    # print(f"{covariance=}")
+    if covariance == (std_ratings1 * std_ratings2):
+        return 1.0
+    else:
+        return covariance / (std_ratings1 * std_ratings2)
 
 
 def spearman_rank_correlation(book_ratings1, book_ratings2):
