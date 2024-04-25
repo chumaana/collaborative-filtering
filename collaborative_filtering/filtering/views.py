@@ -101,12 +101,13 @@ def rate_view(request):
 def admin_profile_view(request):
     template_name = "filtering/adminProfile.html"
 
-    return render(request,template_name)
+    return render(request, template_name)
+
 
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
-    # print (main.recommend_user(request.user))
-    return render(request,template_name)
+
+    return render(request, template_name)
 
 
 def register_view(request):

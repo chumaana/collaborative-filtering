@@ -1,19 +1,5 @@
-"""collaborative_filtering URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.urls import path
+<<<<<<< e2dee7c4005701546172ab8b277afe5489b55198
 from filtering.views import LoginView,logout_view, rate_view,admin_profile_view,recommendations_view,register_view
 # from filtering.views import login
 
@@ -31,4 +17,25 @@ urlpatterns = [
     
 
 
+=======
+from filtering.views import (
+    MyLogin,
+    admin_profile_view,
+    recommendations_view,
+    register_view,
+    start_user_page_view,
+)
+
+# from filtering.views import login
+
+urlpatterns = [
+    path("login/", MyLogin.as_view()),
+    path("startPage/", start_user_page_view),
+    path("adminProfile/", admin_profile_view),
+    path("recommendations/", recommendations_view),
+    path(
+        "register/",
+        register_view,
+    ),
+>>>>>>> 92af02d6e45f3d636af822f73f7ce3f5df6c029f
 ]

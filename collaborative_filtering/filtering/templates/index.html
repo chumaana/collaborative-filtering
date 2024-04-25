@@ -15,6 +15,14 @@
         </li>
         {% endfor %}
     </ul>
+
+    <h1>Recommenations</h1>
+    <ul>{% for item in recommend_books %}
+        <li>
+            <p>{{ item.0.name }} - {{ item.1 }}</p>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 
 </html> {% endcomment %}

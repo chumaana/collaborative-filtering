@@ -3,26 +3,14 @@ from filtering.algorithms import algorithms
 from filtering.models import Book, Review, User
 
 
-class BookRate:
-    def __init__(self, book, rate):
-        self.book = book
-        self.rate = rate
-
-
-class WeighedBookRate:
-    def __init__(self, similarity, book_rate: BookRate):
-        self.similarity = similarity
-        self.book_rate = book_rate
-
-
-def get_book(queryset):
+def get_book(queryset) -> set:
     filtered_set = set()
     for item in queryset:
         filtered_set.add((item.book))
     return filtered_set
 
 
-def get_users_reviews():
+def get_users_reviews() -> list:
     users = User.objects.all()
     users_reviews = []
     for user in users:
@@ -33,13 +21,6 @@ def get_users_reviews():
     return users_reviews
 
 
-def get_book_rate(user, books):
-    user_reviews = Review.objects.filter(user=user)
-
-    for review in user_reviews:
-        book_rate = BookRate(review.book, review.rate)
-
-
 def get_avg_rate(user):
     sum_rate = 0
     for review in user.review.all():
@@ -48,9 +29,11 @@ def get_avg_rate(user):
 
 
 def calculate_similarity(user):
-    user_reviewed_books = get_book(
-        user.review.all()
-    )  # only books reviewed by current user
+    # user_reviewed_books = get_book(
+    #     user.review.all()
+    # )  # only books reviewed by current user
+    user_reviewed_books = set(Book.objects.filter(review__user=user))
+    print(user_reviewed_books)
     filtered_all_reviews = get_users_reviews()  # (user, books) reviewed by all users
     comparison = {}
 
@@ -75,13 +58,13 @@ def calculate_similarity(user):
 
             # print(f"u1: {u1}, u2: {u2}\n")
 
-            # cos_similarity = algorithms.cosine_similarity(u1, u2)
+            cos_similarity = algorithms.cosine_similarity(u1, u2)
             similarity = algorithms.cosine_similarity(u1, u2)
-            # pear_similarity = algorithms.pearson_correlation(u1, u2)
-            # spear_similarity = algorithms.spearman_rank_correlation(u1, u2)
-            print(f"cos sim with {compered_user} is {similarity}")
-            # print(f"pear sim with {compered_user} is {pear_similarity}")
-            # print(f"spear sim with {compered_user} is {spear_similarity}\n")
+            pear_similarity = algorithms.pearson_correlation(u1, u2)
+            spear_similarity = algorithms.spearman_rank_correlation(u1, u2)
+            print(f"cos sim with {compered_user} is {cos_similarity}")
+            print(f"pear sim with {compered_user} is {pear_similarity}")
+            print(f"spear sim with {compered_user} is {spear_similarity}\n")
 
         comparison[compered_user] = (similarity, different_books)
 
@@ -94,12 +77,8 @@ def calculate_recommendation(comparison, user):
     # check if there are enough users
     user_unread_books_dict = {}
 
-    user_books = get_book(Review.objects.filter(user=user))
+    user_books = set(Book.objects.filter(review__user=user))
     user_unread_books = set(Book.objects.all()).difference(user_books)
-
-    for book in user_unread_books:
-        if book.review.all():  # book that has a review
-            user_unread_books_dict[book] = False
 
     predicted_ratings = {}
     predicted_rate = 0
@@ -108,6 +87,8 @@ def calculate_recommendation(comparison, user):
         book_reviews = Review.objects.filter(book=book)
         if book_reviews:
             for review in book_reviews:
+                if review.user == None:
+                    continue
                 similarity = comparison[review.user][0]
                 avg_rate = get_avg_rate(review.user)
                 predicted_rate += (review.rate - avg_rate) * similarity
@@ -120,8 +101,6 @@ def calculate_recommendation(comparison, user):
 def recommend_user(user):
     comparison = calculate_similarity(user)
     pred_ratings = calculate_recommendation(comparison, user)
-    print(pred_ratings)
+
     sorted_books = sorted(pred_ratings.items(), key=lambda item: item[1], reverse=True)
-    return sorted_books[:5]
-    # for book in sorted_books:
-    #     print(f"{book[0].name}: {book[1]}")
+    return sorted_books
