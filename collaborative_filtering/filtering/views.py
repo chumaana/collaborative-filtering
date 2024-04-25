@@ -105,7 +105,7 @@ def admin_profile_view(request):
 
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
-
+    # print (main.recommend_user(request.user))
     return render(request,template_name)
 
 
@@ -125,11 +125,11 @@ def register_view(request):
 
 
 # Create your views here.
-def test_core(request):
-    print("It is test_core function!")
-    reviews = request.user.review.all()
-    # print(reviews)
-    comparison = main.calculate_similarity(request.user)
-    main.calculate_recommendation(comparison)
-    context = {"reviews": reviews, "user": request.user}
-    return render(request, "index.html", context)
+# def test_core(request):
+#     print("It is test_core function!")
+#     reviews = request.user.review.all()
+#     # print(reviews)
+#     comparison = main.calculate_similarity(request.user)
+#     main.calculate_recommendation(comparison)
+#     context = {"reviews": reviews, "user": request.user}
+#     return render(request, "index.html", context)

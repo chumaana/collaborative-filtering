@@ -3,6 +3,7 @@ from filtering.models import Book, User,Review
 
 
 
+
 def get_not_rated_books(user):
     user_rated_books_ids = Review.objects.filter(user=user).values_list('book_id', flat=True)
 
@@ -17,3 +18,6 @@ def add_review(user, book, rating):
 
 
     return new_review
+
+
+
