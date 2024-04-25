@@ -19,7 +19,6 @@ def pearson_correlation(book_ratings1, book_ratings2):
     ratings1 = np.array(book_ratings1)
     ratings2 = np.array(book_ratings2)
 
-    # covariance = np.cov(ratings1, ratings2)
     mean_ratings1 = np.mean(ratings1)
     mean_ratings2 = np.mean(ratings2)
 
@@ -27,7 +26,6 @@ def pearson_correlation(book_ratings1, book_ratings2):
     std_ratings2 = np.std(ratings2)
 
     covariance = np.mean((ratings1 - mean_ratings1) * (ratings2 - mean_ratings2))
-    # print(f"{covariance=}")
     if covariance == (std_ratings1 * std_ratings2):
         return 1.0
     else:

@@ -3,20 +3,12 @@ from filtering.algorithms import algorithms
 from filtering.models import Book, Review, User
 
 
-def get_book(queryset) -> set:
-    filtered_set = set()
-    for item in queryset:
-        filtered_set.add((item.book))
-    return filtered_set
-
-
 def get_users_reviews() -> list:
     users = User.objects.all()
     users_reviews = []
     for user in users:
-        user_reviews = user.review.all()
-        filtered_reviews = get_book(user_reviews)
-        users_reviews.append((user, filtered_reviews))
+        user_books = set(Book.objects.filter(review__user=user))
+        users_reviews.append((user, user_books))
 
     return users_reviews
 
@@ -29,9 +21,6 @@ def get_avg_rate(user):
 
 
 def calculate_similarity(user):
-    # user_reviewed_books = get_book(
-    #     user.review.all()
-    # )  # only books reviewed by current user
     user_reviewed_books = set(Book.objects.filter(review__user=user))
     print(user_reviewed_books)
     filtered_all_reviews = get_users_reviews()  # (user, books) reviewed by all users

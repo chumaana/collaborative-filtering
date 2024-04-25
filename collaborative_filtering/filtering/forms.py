@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from filtering.models import User, Book
+from filtering.models import Book, User
 
 
 class LoginForm(forms.Form):
@@ -26,5 +26,6 @@ class BookReviewForm(forms.Form):
         widget=forms.RadioSelect,
         choices=CHOICES,
     )
+
 
 ReviewsFormSet = forms.formset_factory(BookReviewForm, extra=5)
