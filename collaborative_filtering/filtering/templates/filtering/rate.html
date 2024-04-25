@@ -1,5 +1,7 @@
-{%extends 'base.html'%} {%block title%}Start{%endblock title%} {%block content%}
-{% if user.is_authenticated %} Hi {{ user.username }}!
+{%extends 'base.html'%} {%block title%}Start{%endblock title%} 
+{% if user.is_authenticated %}
+{%block content%}
+
 <div class="start_page_container">
   <h2>Rate books</h2>
   <p>This is initial step for start</p>
@@ -19,4 +21,5 @@
     <button type="submit">Submit</button>
 </form>
 </div>
-{%endif%} {%endblock content%}
+{%endblock content%}
+{%endif%}

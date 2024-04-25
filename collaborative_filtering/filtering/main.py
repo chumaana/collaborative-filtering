@@ -90,6 +90,7 @@ def calculate_recommendation(comparison, user):
 def recommend_user(user):
     comparison = calculate_similarity(user)
     pred_ratings = calculate_recommendation(comparison, user)
-
+    print(pred_ratings)
     sorted_books = sorted(pred_ratings.items(), key=lambda item: item[1], reverse=True)
-    return sorted_books
+  
+    return sorted_books[:5]

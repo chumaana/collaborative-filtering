@@ -8,6 +8,11 @@ from filtering.models import Book, User
 from filtering.users_books import books_manage
 
 
+def home_view(request):
+    template_name = "filtering/home.html"
+    return render(request,template_name)
+
+
 class LoginView(FormView):
     template_name = "filtering/login.html"
     form_class = LoginForm
@@ -29,14 +34,9 @@ class LoginView(FormView):
 
 
 def logout_view(request):
-    template_name = "filtering/logout.html"
-    render(request, template_name)
-    print(request.user)
 
     logout(request)
-    print("out", request.user)
-
-    return redirect(reverse_lazy("login"))
+    return redirect(reverse_lazy("home"))
 
 
 def rate_view(request):
@@ -78,7 +78,13 @@ def admin_profile_view(request):
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
 
-    return render(request, template_name)
+    books = main.recommend_user(request.user)
+    print("recccc", books)
+    return render(
+            request,template_name,{"books":books})
+
+
+    # return render(request, template_name)
 
 
 def register_view(request):

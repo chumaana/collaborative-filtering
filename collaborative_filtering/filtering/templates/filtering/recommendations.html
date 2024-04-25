@@ -1,33 +1,21 @@
-{%extends 'base.html'%}
-{%block title%}Recommendations{%endblock title%}
+{%extends 'base.html'%} 
+{%block title%}Recommendations{%endblock title%} 
+{% if user.is_authenticated %}
 {%block content%}
 <div class="recommendations_page_container">
-    <h2>You may like it</h2>
-    <p>There are recomendations for you, based on your books' rates</p>
+  <h2>You may like it</h2>
+  <p>There are recomendations for you, based on your books' rates</p>
 
-    <!-- here will be rendering using for -->
+  <!-- here will be rendering using for -->
+<div class="block_books">
+  {%for review in books %}
+  <div class="book">
+    <p>{{review.0.name}}</p>
 
-    <div class="block_books">
-
-        <div class="book">
-            <img src="" alt="">
-            <p>This is new book</p>
-            <input type="range">
-        </div>
-        <div class="book">
-            <img src="" alt="">
-            <p>This is new book</p>
-
-            <input type="range">
-        </div>
-        <div class="book">
-            <img src="" alt="">
-            <p>This is new book</p>
-
-            <input type="range">
-        </div>
-    </div>
+  </div>
+  {%endfor%}
+</div>
 </div>
 
-
 {%endblock content%}
+{%endif%}
