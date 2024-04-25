@@ -29,3 +29,15 @@ class BookReviewForm(forms.Form):
 
 
 ReviewsFormSet = forms.formset_factory(BookReviewForm, extra=5)
+
+
+class MethodChoiceForm(forms.Form):
+    CHOICES = [
+        ('cosine', 'Cosine similarity'),
+        ('pearson', 'Pearson correlation'),
+        ('spearman', 'Spearman correlation'),
+    ]
+    select_field = forms.ChoiceField(choices=CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    input_books = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter a number'}))
+    input_users = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter a number'}))
+    input_calc_const = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter a number'}))
