@@ -203,3 +203,24 @@ input[type="password"] :hover {
   transform: translateY(0%);
   box-shadow: 0 0;
 }
+
+/* .star-rating {
+  font-size: 0;
+}
+.star-rating input {
+  display: none;
+}
+.star-rating label {
+  font-size: 25px;
+  padding: 5px;
+  cursor: pointer;
+  display: inline-block;
+}
+.star-rating input:checked + label:before {
+  content: "\2605";
+  color: #ffcc00;
+} */
+
+.star-wrap{
+  display: flex;;
+}

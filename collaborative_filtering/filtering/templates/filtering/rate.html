@@ -1,0 +1,22 @@
+{%extends 'base.html'%} {%block title%}Start{%endblock title%} {%block content%}
+{% if user.is_authenticated %} Hi {{ user.username }}!
+<div class="start_page_container">
+  <h2>Rate books</h2>
+  <p>This is initial step for start</p>
+  <!-- here will be rendering using for -->
+  <form method="post" action="" class="block_books">
+    {{ formset.management_form }}
+    {% csrf_token %}
+    {% comment %} {% for book in books_not_reviewed %} {% endcomment %} 
+    {% for book, form in book_forms %}
+    <div class="book">
+      <p>{{ book.name }}</p>
+      <div class="star-rating">
+        {{ form }} 
+      </div>
+    </div>
+    {% endfor %} 
+    <button type="submit">Submit</button>
+</form>
+</div>
+{%endif%} {%endblock content%}
