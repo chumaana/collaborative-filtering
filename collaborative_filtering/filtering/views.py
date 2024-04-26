@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from filtering import main
-from filtering.forms import BookReviewForm, LoginForm, RegisterForm, ReviewsFormSet
+from filtering.forms import BookReviewForm, LoginForm, RegisterForm, ReviewsFormSet,MethodChoiceForm
 from filtering.models import Book, User
 from filtering.users_books import books_manage
 
@@ -45,7 +45,7 @@ def rate_view(request):
     books = books_manage.get_not_rated_books(request.user)
     if request.method.lower() == "get":
         formset = ReviewsFormSet()
-        return render(
+        return render( 
             request,
             template_name,
             {"book_forms": zip(books, formset), "formset": formset},
@@ -71,9 +71,21 @@ def rate_view(request):
 
 def admin_profile_view(request):
     template_name = "filtering/adminProfile.html"
-    # main.recommend_user(request.user)
-    main.process_all_users()
-    return render(request, template_name)
+
+
+    if request.method == 'POST':
+        form = MethodChoiceForm(request.POST)
+        if form.is_valid():
+            selected_option = form.cleaned_data['select_field']
+            input_books = form.cleaned_data['input_books']
+            input_users = form.cleaned_data['input_users']
+            input_calc_const = form.cleaned_data['input_calc_const']
+            print(selected_option,input_books,input_users,input_calc_const)
+            return render(request, template_name, {'form': form})
+
+    else:
+        form = MethodChoiceForm()
+        return render(request, template_name, {'form': form})
 
 
 def recommendations_view(request):
