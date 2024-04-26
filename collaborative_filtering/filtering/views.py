@@ -1,16 +1,25 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from filtering import main
-from filtering.forms import BookReviewForm, LoginForm, RegisterForm, ReviewsFormSet,MethodChoiceForm
+from filtering.forms import (
+    BookReviewForm,
+    LoginForm,
+    MethodChoiceForm,
+    RegisterForm,
+    ReviewsFormSet,
+)
 from filtering.models import Book, User
 from filtering.users_books import books_manage
 
 
 def home_view(request):
     template_name = "filtering/home.html"
-    return render(request,template_name)
+    return render(request, template_name)
 
 
 class LoginView(FormView):
@@ -45,7 +54,7 @@ def rate_view(request):
     books = books_manage.get_not_rated_books(request.user)
     if request.method.lower() == "get":
         formset = ReviewsFormSet()
-        return render( 
+        return render(
             request,
             template_name,
             {"book_forms": zip(books, formset), "formset": formset},
@@ -69,33 +78,46 @@ def rate_view(request):
         return redirect(reverse_lazy("recommendations"))
 
 
+def admin_check(user):
+    return user.is_superuser
+
+
+@user_passes_test(admin_check)
 def admin_profile_view(request):
     template_name = "filtering/adminProfile.html"
 
-
-    if request.method == 'POST':
+    if request.method == "POST":
         form = MethodChoiceForm(request.POST)
         if form.is_valid():
-            selected_option = form.cleaned_data['select_field']
-            input_books = form.cleaned_data['input_books']
-            input_users = form.cleaned_data['input_users']
-            input_calc_const = form.cleaned_data['input_calc_const']
-            print(selected_option,input_books,input_users,input_calc_const)
-            return render(request, template_name, {'form': form})
+            selected_option = form.cleaned_data["select_field"]
+            input_books = form.cleaned_data["input_books"]
+            input_users = form.cleaned_data["input_users"]
+            input_calc_const = form.cleaned_data["input_calc_const"]
+            print(selected_option, input_books, input_users, input_calc_const)
+            main.process_all_users(
+                input_users, input_calc_const, input_books, selected_option
+            )
+            return render(request, template_name, {"form": form})
 
     else:
         form = MethodChoiceForm()
-        return render(request, template_name, {'form': form})
+        return render(request, template_name, {"form": form})
 
 
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
 
-    books = main.recommend_user(request.user)
-    print("recccc", books)
-    return render(
-            request,template_name,{"books":books})
+    f = open("recs.json")
 
+    data = json.load(f)
+    books = data[str(request.user.id)]
+    rec_books = []
+
+    for book in books:
+        rec_books.append(Book.objects.get(id=book[0]))
+    print("recccc", rec_books)
+    f.close()
+    return render(request, template_name, {"books": rec_books})
 
     # return render(request, template_name)
 

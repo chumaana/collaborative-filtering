@@ -11,9 +11,9 @@ class UserBooks:
 
 
 ALGORITHMS = {
-    "cosine_similarity": algorithms.cosine_similarity,
-    "pearson_correlation": algorithms.pearson_correlation,
-    "spearman_rank_correlation": algorithms.spearman_rank_correlation,
+    "cosine": algorithms.cosine_similarity,
+    "pearson": algorithms.pearson_correlation,
+    "spearman": algorithms.spearman_rank_correlation,
 }
 
 
@@ -35,7 +35,7 @@ def get_avg_rate(user):
 
 
 def calculate_similarity(
-    user, user_books, algorithm_to_use="cosine_similarity", min_number_of_books=0
+    user, user_books, algorithm, min_number_of_books
 ) -> dict | None:
     # print(user_reviewed_books)
     users_and_their_books = get_users_reviews()  # (user, books) reviewed by all users
@@ -53,7 +53,7 @@ def calculate_similarity(
         same_books = user_books.intersection(
             compare_books
         )  # set(book) intersection of curr user books and second user
-        if len(same_books < min_number_of_books):
+        if len(same_books) < min_number_of_books:
             continue
 
         different_books = compare_books.difference(same_books)
@@ -67,32 +67,32 @@ def calculate_similarity(
             u2.append(u2_review.rate)
 
         # cos_similarity = algorithms.cosine_similarity(u1, u2)
-        if ALGORITHMS[algorithm_to_use]:
-            similarity = ALGORITHMS[algorithm_to_use](u1, u2)
+        if ALGORITHMS[algorithm]:
+            similarity = ALGORITHMS[algorithm](u1, u2)
             if similarity != False:
                 comparison[compered_user] = (similarity, different_books)
             else:
                 continue
-        # pear_similarity = algorithms.pearson_correlation(u1, u2)
-        # spear_similarity = algorithms.spearman_rank_correlation(u1, u2)
-        # print(f"cos sim with {compered_user} is {cos_similarity}")
-        # print(f"pear sim with {compered_user} is {pear_similarity}")
-        # print(f"spear sim with {compered_user} is {spear_similarity}\n")
-
-        # print(f"With {compered_user} {comparison[compered_user]}")
 
     # comparison.sort(key=lambda x: x[1], reverse=True)
-    # print(comparison)
+    {
+        k: v
+        for k, v in sorted(comparison.items(), key=lambda item: item[1], reverse=True)
+    }
+    print("comparison:", comparison)
     return comparison
 
 
-def calculate_recommendation(
-    comparison, user, user_books, k=0.5, users_for_rec=1
-) -> dict:
+def calculate_recommendation(comparison, user, user_books, k, users_for_rec) -> dict:
     user_unread_books = set(Book.objects.all()).difference(user_books)
+    if users_for_rec > len(comparison):
+        users_for_rec = len(comparison)
 
     predicted_ratings = {}
     predicted_rate = 0
+
+    # slice = slice(users_for_rec)
+    # users_to_include = comparison[slice]
 
     # print(f"USER: {user}")
     # print(f"Books user has read: {user_books}")
@@ -114,24 +114,35 @@ def calculate_recommendation(
     return predicted_ratings
 
 
-def recommend_user(user):
+def recommend_user(user, users_for_rec, k, min_number_of_books, algorithm):
     user_books = set(Book.objects.filter(review__user=user))
     if not len(user_books):
         print(f"{user} doesn't have reviewed books")
         return None
 
-    comparison = calculate_similarity(user, user_books)
+    comparison = calculate_similarity(user, user_books, algorithm, min_number_of_books)
     # print(comparison)
-    pred_ratings = calculate_recommendation(comparison, user, user_books)
+    pred_ratings = calculate_recommendation(
+        comparison, user, user_books, k, users_for_rec
+    )
 
     sorted_books = sorted(pred_ratings.items(), key=lambda item: item[1], reverse=True)
     return sorted_books
 
 
-def process_all_users():
+def process_all_users(users_for_rec, k, min_number_of_books, algorithm="cosine"):
+    if min_number_of_books is None:
+        min_number_of_books = 1
+    if k is None:
+        k = 0.5
+    if users_for_rec is None:
+        users_for_rec = 1
+
     data = {}
     for user in User.objects.all():
-        recommendations = recommend_user(user)
+        recommendations = recommend_user(
+            user, users_for_rec, k, min_number_of_books, algorithm
+        )
         data[user.id] = recommendations
 
     with open("recs.json", "w") as f:
