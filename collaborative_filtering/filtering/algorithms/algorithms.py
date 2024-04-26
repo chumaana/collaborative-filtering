@@ -1,4 +1,7 @@
+import math
+
 import numpy as np
+import pandas as pd
 
 
 def cosine_similarity(book_ratings1, book_ratings2):
@@ -16,39 +19,45 @@ def cosine_similarity(book_ratings1, book_ratings2):
 
 
 def pearson_correlation(book_ratings1, book_ratings2):
+    n = len(book_ratings1)
     ratings1 = np.array(book_ratings1)
     ratings2 = np.array(book_ratings2)
 
-    mean_ratings1 = np.mean(ratings1)
-    mean_ratings2 = np.mean(ratings2)
+    sum_product = np.sum(ratings1 * ratings2)
+    sum_1 = np.sum(ratings1)
+    sum_2 = np.sum(ratings2)
+    sum_squared_1 = np.sum(ratings1 * ratings1)
+    sum_squared_2 = np.sum(ratings2 * ratings2)
+    # print(f"{n=} {sum_1=} {sum_2=} {sum_product=} {sum_squared_1=} {sum_squared_2=}")
 
-    std_ratings1 = np.std(ratings1)
-    std_ratings2 = np.std(ratings2)
-
-    covariance = np.mean((ratings1 - mean_ratings1) * (ratings2 - mean_ratings2))
-    if covariance == (std_ratings1 * std_ratings2):
-        return 1.0
-    else:
-        return covariance / (std_ratings1 * std_ratings2)
+    coef = (n * sum_product - sum_1 * sum_2) / (
+        math.sqrt(
+            (n * sum_squared_1 - math.pow(sum_1, 2))
+            * (n * sum_squared_2 - math.pow(sum_2, 2))
+        )
+    )
+    return coef
 
 
 def spearman_rank_correlation(book_ratings1, book_ratings2):
+    n = len(book_ratings1)
+    if n < 5:
+        return False
     ratings1 = np.array(book_ratings1)
     ratings2 = np.array(book_ratings2)
 
-    rank_ratings1 = np.argsort(ratings1)
-    rank_ratings2 = np.argsort(ratings2)
+    table = pd.DataFrame(data={"book_ratings1": ratings1, "book_ratings2": ratings2})
+    # print(table)
 
-    ranked_ratings1 = np.empty(len(ratings1))
-    ranked_ratings2 = np.empty(len(ratings2))
+    ranked_ratings1 = table["book_ratings1"].rank()
+    ranked_ratings2 = table["book_ratings2"].rank()
+    ranked_ratings1 = pd.DataFrame(ranked_ratings1).to_numpy()
+    ranked_ratings2 = pd.DataFrame(ranked_ratings2).to_numpy()
 
-    for i, idx in enumerate(rank_ratings1):
-        ranked_ratings1[idx] = i
-
-    for i, idx in enumerate(rank_ratings2):
-        ranked_ratings2[idx] = i
+    print(f"Data: {ranked_ratings1=} {ranked_ratings2=}")
 
     squared_diff = np.sum(np.square(ranked_ratings1 - ranked_ratings2))
-    correlation = 1 - (6 * squared_diff) / (len(ratings1) * (len(ratings1) ** 2 - 1))
 
+    correlation = 1 - (6 * squared_diff) / (n * (n**2 - 1))
+    print(correlation)
     return correlation

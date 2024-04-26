@@ -71,7 +71,8 @@ def rate_view(request):
 
 def admin_profile_view(request):
     template_name = "filtering/adminProfile.html"
-
+    # main.recommend_user(request.user)
+    main.process_all_users()
     return render(request, template_name)
 
 
