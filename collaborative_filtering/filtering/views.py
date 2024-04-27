@@ -35,6 +35,8 @@ class LoginView(FormView):
         print(user)
         if user is not None:
             login(self.request, user)
+            if user.is_superuser:
+                self.success_url = reverse_lazy("admin_profile") 
             return super().form_valid(form)
         else:
             print("hui")
