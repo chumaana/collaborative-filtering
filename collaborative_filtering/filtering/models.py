@@ -7,6 +7,7 @@ from django.db import models
 class Book(models.Model):
     name = models.CharField(max_length=128)
     author = models.CharField(max_length=64)
+    isbn = models.CharField(max_length=20, primary_key=True)
 
 
 class User(AbstractUser):
