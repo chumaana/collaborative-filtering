@@ -13,8 +13,12 @@
     <div class="block_books">
       {% for book, form in book_forms %}
       <div class="book card">
-        <div>
+        <div class="book_img">
+          <img src="https://cdn-icons-png.flaticon.com/512/11804/11804690.png" alt="" width="100%">
+        </div>
+        <div class="book_info">
           <h4 class="book-name">{{ book.name }}</h4>
+
           <p class="book-author">{{ book.author }}</p>
         </div>
         <div class="star-rating">

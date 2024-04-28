@@ -22,7 +22,9 @@ def get_avg_rate(user):
 def calculate_similarity(algorithm, min_number_of_books) -> None:
     comparison = {}
     min_number_of_books = int(min_number_of_books)
+    
     users = User.objects.all()
+  
     for curr_user in users:
         similarities = []
         user_books = Book.objects.filter(review__user=curr_user)
@@ -68,6 +70,7 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
 
         if len(similarities):
             comparison[curr_user] = similarities
+            # print(algorithm,similarity)
 
     with open("similarity.txt", "wb") as f:
         pickle.dump(comparison, f)
