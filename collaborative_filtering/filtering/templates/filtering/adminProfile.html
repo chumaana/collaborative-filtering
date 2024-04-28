@@ -1,27 +1,27 @@
 {%extends 'base.html'%}
 {%block title%}Admin Profile{%endblock title%}
 {%block content%}
-    
-    <form method="post"  class="container">
-        <div>
-            
-            <h1>Restart</h1>
-            {% csrf_token %}
-            <div>
-                <h3>Configure settings</h3>
-                <p>Choose method </p>
-                {{ form.select_field }}
-                <p>Choose how many users are required for recommendations </p>
-                {{ form.input_users }}
-                <p>Choose what is required minimum for common books </p>
-                {{ form.input_books }}
-                <p>Choose constant for calculation </p>
-                {{ form.input_calc_const }}
-                
-            </div>
-        </div>
-       
-        
+
+<form method="post" class="container">
+
+
+    <h1>Restart</h1>
+    {% csrf_token %}
+    <div class=" settings">
+        <h3>Configure settings</h3>
+        <p>Choose method </p>
+        {{ form.select_field }}
+        <p>Choose how many users are required for recommendations </p>
+        {{ form.input_users }}
+        <p>Choose what is required minimum for common books </p>
+        {{ form.input_books }}
+        <p>Choose constant for calculation </p>
+        {{ form.input_calc_const }}
+
+
+    </div>
+
+
     <button type="submit" class="restart">
         <span class="back"></span>
         <span class="front"></span>

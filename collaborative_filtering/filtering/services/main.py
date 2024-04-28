@@ -23,7 +23,9 @@ def get_avg_rate(user):
 def calculate_similarity(algorithm, min_number_of_books) -> None:
     comparison = {}
     min_number_of_books = int(min_number_of_books)
+    
     users = User.objects.all()
+  
     for curr_user in users:
         similarities = []
         # print(f"Calculating for user {curr_user}")
@@ -64,7 +66,7 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
                 .order_by("book_id")
                 .values_list("rate", flat=True)
             )
-            # print(f"Comparing {curr_user.username} and {comp_user.username}")
+            # print(f"current rates {curr_rates}, comparing with {comp_rates}")
 
             if ALGORITHMS.get(algorithm):
                 similarity = ALGORITHMS[algorithm](curr_rates, comp_rates)
@@ -77,6 +79,7 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
 
         if len(similarities):
             comparison[curr_user] = similarities
+            # print(algorithm,similarity)
 
     with open("similarity.txt", "wb") as f:
         pickle.dump(comparison, f)
@@ -186,3 +189,7 @@ def process_all_users(user, users_for_rec, k, min_number_of_books, algorithm="co
 
     # for key in similarity:
     #     print(f"Sim {key}")
+
+
+  # Replace with the appropriate user
+

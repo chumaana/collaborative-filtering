@@ -91,7 +91,7 @@ def admin_profile_view(request):
 
     if request.method == "POST":
         form = MethodChoiceForm(request.POST)
-        if form.is_valid():
+        if (form.is_valid() and form.cleaned_data["input_books"] and form.cleaned_data["input_users"] and form.cleaned_data["input_calc_const"]) :
             selected_option = form.cleaned_data["select_field"]
             input_books = form.cleaned_data["input_books"]
             input_users = form.cleaned_data["input_users"]
@@ -105,10 +105,11 @@ def admin_profile_view(request):
                 selected_option,
             )
             return render(request, template_name, {"form": form})
+        
 
-    else:
-        form = MethodChoiceForm()
-        return render(request, template_name, {"form": form})
+
+    form = MethodChoiceForm()
+    return render(request, template_name, {"form": form})
 
 
 def recommendations_view(request):
@@ -128,11 +129,13 @@ def recommendations_view(request):
         # print(data)
         if data:
             if request.user.id in data:
-                books = data[request.user.id]
+                books = list(data[request.user.id])[:5]  
+                print(books)
                 # for book in books:
                 #     rec_books.append(book[0])
         # print("recccc", rec_books)
         f.close()
+       
     return render(request, template_name, {"books": books})
 
     # return render(request, template_name)

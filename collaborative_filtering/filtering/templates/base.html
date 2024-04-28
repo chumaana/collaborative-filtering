@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{%block title%}Document{%endblock title%}</title>
+  <title>{% block title %}Document{% endblock title %}</title>
   {% load static %}
 
   <link rel="stylesheet" href="{% static 'filtering/style.css' %}">
@@ -16,14 +16,27 @@
   </header>
   <div class="fl-container">
     {% if request.user.is_authenticated %}
+    {% if not request.user.is_superuser %}
     <div>
-      {% if not request.user.is_superuser%}
 
-      <button class="btn primary"><a href="{% url 'recommendations' %}">Recommended books</a></button>
+      {% if request.path == '/recommendations/' %}
       <button class="btn primary"><a href="{% url 'start' %}">Rate books</a></button>
-      {% endif %}
+      {% else %}
+
+      {% if request.path == '/rate/' %}
+      <button class="btn primary"><a href="{% url 'recommendations' %}">Recommended books</a></button>
+      {% else %}
+
+      <button class="btn primary"><a href="{% url 'start' %}">Rate books</a></button>
+      <button class="btn primary"><a href="{% url 'recommendations' %}">Recommended books</a></button>
+
+      {% endif %} {% endif %}
+
     </div>
-    <button class="btn"><a href="{% url 'logout' %}">Logout</a></button>
+    {% endif %}
+    <button class="btn  logout"><a href="{% url 'logout' %}">Logout</a></button>
+
+
   </div>
 
   {% else %}
@@ -33,9 +46,9 @@
   </div>
   {% endif %}
 
-  {%block content%}
+  {% block content %}
 
-  {%endblock content%}
+  {% endblock content %}
 
 </body>
 
