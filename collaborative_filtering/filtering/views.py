@@ -1,6 +1,7 @@
 import os
 import pickle
 
+import matplotlib.pyplot as plt
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render
@@ -13,7 +14,6 @@ from filtering.forms import (
     RegisterForm,
     ReviewsFormSet,
 )
-from filtering.models import Book, Review
 from filtering.services import books_manage, main
 
 
@@ -32,7 +32,7 @@ class LoginView(FormView):
         password = form.cleaned_data["password"]
 
         user = authenticate(self.request, username=username, password=password)
-        print(user)
+        # print(user)
         if user is not None:
             login(self.request, user)
             if user.is_superuser:
@@ -74,10 +74,8 @@ def rate_view(request):
 
         for book, form in zip(books, formset):
             form: BookReviewForm
-            print(f"{book=} was rated {form.cleaned_data['like']!r}")
+            # print(f"{book=} was rated {form.cleaned_data['like']!r}")
             books_manage.add_review(request.user, book, int(form.cleaned_data["like"]))
-
-        # return render(request, template_name, {'book_forms': zip(books, formset), "formset": formset})
         return redirect(reverse_lazy("recommendations"))
 
 
@@ -96,13 +94,9 @@ def admin_profile_view(request):
             input_books = form.cleaned_data["input_books"]
             input_users = form.cleaned_data["input_users"]
             input_calc_const = form.cleaned_data["input_calc_const"]
-            print(selected_option, input_books, input_users, input_calc_const)
+
             main.process_all_users(
-                request.user,
-                input_users,
-                input_calc_const,
-                input_books,
-                selected_option,
+                input_users, input_calc_const, input_books, selected_option
             )
             return render(request, template_name, {"form": form})
         
@@ -114,31 +108,18 @@ def admin_profile_view(request):
 
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
-
-    print("I'm:", request.user)
-    print("My books:", request.user.review.all())
     books = []
 
     if os.stat("recs.txt").st_size != 0:
         f = open("recs.txt", "rb")
 
         data = pickle.load(f)
-
-        # for review in request.user.review.all():
-        #     print(f"{review}: {Book.objects.get(isbn=review.book_id).review.all()}")
-        # print(data)
         if data:
             if request.user.id in data:
-                books = list(data[request.user.id])[:5]  
-                print(books)
-                # for book in books:
-                #     rec_books.append(book[0])
-        # print("recccc", rec_books)
+                books = data[request.user.id]
         f.close()
        
     return render(request, template_name, {"books": books})
-
-    # return render(request, template_name)
 
 
 def register_view(request):

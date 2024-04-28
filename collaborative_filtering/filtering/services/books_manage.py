@@ -1,5 +1,5 @@
 from django.db.models import Avg, Count
-from filtering.models import Book, Review, User
+from filtering.models import Book, Review
 
 
 def get_not_rated_books(user):
@@ -12,7 +12,6 @@ def get_not_rated_books(user):
         .annotate(num_reviews=Count("review"), avg_rate=Avg("review__rate"))
         .order_by("-num_reviews", "-avg_rate")[:5]
     )
-    # print([book.num_reviews for book in unrated_books])
     return unrated_books
 
 
