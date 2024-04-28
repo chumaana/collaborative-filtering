@@ -7,13 +7,17 @@
   <p>There are recomendations for you, based on your books' rates</p>
 
   <!-- here will be rendering using for -->
-  <div class="block_books">
-    {%for review in books %}
-    <div class="book">
-      <p>{{review.name}}</p>
-
+  <div class="block_books_rec">
+    {% if books %}
+    {%for book in books %}
+    <div class="book card rec">
+      <h4 class="book-name">{{ book.name }}</h4>
+      <p class="book-author">{{ book.author }}</p>
     </div>
     {%endfor%}
+    {% else %}
+    <p>You don't have any rated books yet</p>
+    {% endif %}
   </div>
 </div>
 

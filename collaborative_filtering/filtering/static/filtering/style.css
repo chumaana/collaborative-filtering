@@ -5,6 +5,26 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+body {
+  margin: 16px;
+}
+
+h1 {
+  margin-top: 16px;
+}
+
+/* .cntr-container {
+  margin: 0 auto;
+} */
+
+.fl-container {
+  display: flex;
+  /* /* justify-content: space-between;  */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .container {
   display: flex;
   /* justify-content: space-between; */
@@ -129,23 +149,42 @@ input[type="submit"]:hover {
 .block_books {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 50px 0 0 50px;
+  justify-content: center;
+  /* margin: 50px 0 0 50px; */
+}
+
+.block_books_rec {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rec {
+  min-width: 200px;
 }
 .book {
-  /* width: calc(100% / 3); */
-  margin: 0 30px 20px;
+  flex-grow: 1;
+  flex-basis: 0;
+  /* width: 100%; */
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  --border-radius: 0.75rem;
+  --primary-color: #7257fa;
+  --secondary-color: #3c3852;
+  /* width: 210px; */
+  font-family: "Arial";
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  background: #f1f1f3;
+  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+  position: relative;
+  margin: 0 15px 20px;
 }
+
 .recommendations_page_container h4 {
   margin-top: 15px;
 }
-/* input[type="text"],
-input[type="password"] :hover {
-  box-shadow: rgb(231 238 236) 0px 0px 0px 3px;
-} */
-/* .card h2 {
-  margin-bottom: 20px;
-} */
 
 .restart {
   margin-top: 50px;
@@ -204,23 +243,54 @@ input[type="password"] :hover {
   box-shadow: 0 0;
 }
 
-/* .star-rating {
-  font-size: 0;
+.star-wrap {
+  display: flex;
 }
-.star-rating input {
-  display: none;
-}
-.star-rating label {
-  font-size: 25px;
-  padding: 5px;
+
+.btn {
+  appearance: none;
+  background-color: #fafbfc;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #24292e;
   cursor: pointer;
   display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 16px;
+  position: relative;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
 }
-.star-rating input:checked + label:before {
-  content: "\2605";
-  color: #ffcc00;
-} */
 
-.star-wrap{
-  display: flex;;
+.book-author {
+  color: #8d88a2;
+}
+
+.btn > a {
+  color: inherit;
+  text-decoration: none;
+}
+.primary {
+  background-color: #f7f5ff;
+  border: 1px solid #bab5d7;
+  color: #7257fa;
+}
+
+.card {
+  justify-content: space-between;
+}
+
+.submit {
+  background-color: #7257fa;
+  color: white;
 }
