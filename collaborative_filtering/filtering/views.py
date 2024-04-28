@@ -89,7 +89,12 @@ def admin_profile_view(request):
 
     if request.method == "POST":
         form = MethodChoiceForm(request.POST)
-        if (form.is_valid() and form.cleaned_data["input_books"] and form.cleaned_data["input_users"] and form.cleaned_data["input_calc_const"]) :
+        if (
+            form.is_valid()
+            and form.cleaned_data["input_books"]
+            and form.cleaned_data["input_users"]
+            and form.cleaned_data["input_calc_const"]
+        ):
             selected_option = form.cleaned_data["select_field"]
             input_books = form.cleaned_data["input_books"]
             input_users = form.cleaned_data["input_users"]
@@ -99,8 +104,6 @@ def admin_profile_view(request):
                 input_users, input_calc_const, input_books, selected_option
             )
             return render(request, template_name, {"form": form})
-        
-
 
     form = MethodChoiceForm()
     return render(request, template_name, {"form": form})
@@ -116,9 +119,9 @@ def recommendations_view(request):
         data = pickle.load(f)
         if data:
             if request.user.id in data:
-                books = data[request.user.id]
+                books = list(data[request.user.id])[:5]
         f.close()
-       
+
     return render(request, template_name, {"books": books})
 
 
