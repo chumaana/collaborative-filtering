@@ -37,13 +37,10 @@ def pearson_correlation(book_ratings1, book_ratings2):
 
 def spearman_rank_correlation(book_ratings1, book_ratings2):
     n = len(book_ratings1)
-    # if n < 5:
-    #     return False
     ratings1 = np.array(book_ratings1)
     ratings2 = np.array(book_ratings2)
 
     table = pd.DataFrame(data={"book_ratings1": ratings1, "book_ratings2": ratings2})
-    # print(table)
 
     ranked_ratings1 = table["book_ratings1"].rank()
     ranked_ratings2 = table["book_ratings2"].rank()

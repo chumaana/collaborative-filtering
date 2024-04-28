@@ -1,4 +1,3 @@
-import os
 import pickle
 from bisect import insort
 
@@ -26,11 +25,8 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
     users = User.objects.all()
     for curr_user in users:
         similarities = []
-        # print(f"Calculating for user {curr_user}")
         user_books = Book.objects.filter(review__user=curr_user)
-        # print(f"My {curr_user} books: {user_books}")
         if not user_books.exists():
-            # print(f"No books")
             continue
 
         user_book_ids = user_books.values_list("isbn", flat=True)
@@ -39,21 +35,17 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
             .distinct()
             .exclude(id=curr_user.id)
         )
-        # print(f"{related_users=} for {curr_user=}")
         for comp_user in related_users:
             comp_user_books = Book.objects.filter(review__user=comp_user)
-            # print(f"{comp_user=} books: {comp_user_books}")
+
             if not comp_user_books.exists():
                 continue
 
             same_books = user_books.intersection(comp_user_books)
             if same_books.count() < min_number_of_books:
-                # print(f"not enough, got {same_books.count()}")
                 continue
-            # print(f"Same books: {same_books}")
 
             same_books_ids = same_books.values_list("isbn")
-            # print(same_books2)
             curr_rates = (
                 Review.objects.filter(user=curr_user, book__in=same_books_ids)
                 .order_by("book_id")
@@ -64,7 +56,6 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
                 .order_by("book_id")
                 .values_list("rate", flat=True)
             )
-            # print(f"Comparing {curr_user.username} and {comp_user.username}")
 
             if ALGORITHMS.get(algorithm):
                 similarity = ALGORITHMS[algorithm](curr_rates, comp_rates)
@@ -82,7 +73,7 @@ def calculate_similarity(algorithm, min_number_of_books) -> None:
         pickle.dump(comparison, f)
 
 
-def calculate_recommendation(user, k, users_for_rec) -> dict:
+def calculate_recommendation(k, users_for_rec) -> dict:
     users = User.objects.all()
 
     f = open("similarity.txt", "rb")
@@ -118,37 +109,16 @@ def calculate_recommendation(user, k, users_for_rec) -> dict:
                 predicted_rate = (review.rate - avg_rate) * similarity
                 recommend_books[book] = recommend_books.get(book, 0) + predicted_rate
 
-        # print(recommend_books)
         for book in recommend_books.items():
             recommend_books[book[0]] = book[1] + k * get_avg_rate(user)
 
         recommendations[user.id] = recommend_books
 
-        # books_to_proccess.update(proccess_books)
-
-        #     for review in Review.objects.filter(
-        #         book_id__in=proccess_books.values_list("isbn")
-        #     ):
-        #         avg_rate = get_avg_rate(rec_user)
-        #         predicted_rate += (review.rate - avg_rate) * similarity
-
-        # predicted_ratings[book.isbn] = predicted_rate + k * get_avg_rate(user)
-
-        # for book in user_unread_books:
-        #     book_reviews = book.review.all()
-        #     if book_reviews:
-        #         for review in book_reviews:
-        #             if review.user in sliced_comparison:
-        #                 similarity = sliced_comparison[review.user][0]
-        #                 avg_rate = get_avg_rate(review.user)
-        #                 predicted_rate += (review.rate - avg_rate) * similarity
-
-        #         predicted_ratings[book.isbn] = predicted_rate + k * get_avg_rate(user)
     f.close()
     return recommendations
 
 
-def process_all_users(user, users_for_rec, k, min_number_of_books, algorithm="cosine"):
+def process_all_users(users_for_rec, k, min_number_of_books, algorithm="cosine"):
     if min_number_of_books is None:
         min_number_of_books = 1
     else:
@@ -162,27 +132,8 @@ def process_all_users(user, users_for_rec, k, min_number_of_books, algorithm="co
     else:
         users_for_rec = int(users_for_rec)
 
-    # data = {}
-    # similarity = {}
     calculate_similarity(algorithm, min_number_of_books)
-    # with open("similarity.txt", "rb") as f:
-    #     similarity = pickle.load(f)
-    # for key in similarity:
-    # print(f"{key}: related_users: {similarity[key]}\n")
-
-    recommendations = calculate_recommendation(user, k, users_for_rec)
+    recommendations = calculate_recommendation(k, users_for_rec)
     if recommendations:
         with open("recs.txt", "wb") as f:
             pickle.dump(recommendations, f)
-
-    # if os.stat("recs.txt").st_size != 0:
-    #     with open("recs.txt", "rb") as f:
-    #         recs = pickle.load(f)
-
-    # print(f"Recs length: {len(recs)}; Simil length: {len(similarity)}")
-
-    # for key in recs:
-    #     print(f"Rec {key}: {recs[key]}")
-
-    # for key in similarity:
-    #     print(f"Sim {key}")
