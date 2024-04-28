@@ -8,12 +8,15 @@
 
   <!-- here will be rendering using for -->
   <div class="block_books">
+    {% if books %}
     {%for review in books %}
     <div class="book">
       <p>{{review.name}}</p>
-
     </div>
     {%endfor%}
+    {% else %}
+    <p>You don't have any rated books yet</p>
+    {% endif %}
   </div>
 </div>
 

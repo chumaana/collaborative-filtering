@@ -1,11 +1,11 @@
-import json
+import os
+import pickle
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-from filtering import main
 from filtering.forms import (
     BookReviewForm,
     LoginForm,
@@ -13,8 +13,8 @@ from filtering.forms import (
     RegisterForm,
     ReviewsFormSet,
 )
-from filtering.models import Book, User
-from filtering.users_books import books_manage
+from filtering.models import Book, Review
+from filtering.services import books_manage, main
 
 
 def home_view(request):
@@ -74,6 +74,7 @@ def rate_view(request):
             form: BookReviewForm
             print(f"{book=} was rated {form.cleaned_data['like']!r}")
             books_manage.add_review(request.user, book, int(form.cleaned_data["like"]))
+
         # return render(request, template_name, {'book_forms': zip(books, formset), "formset": formset})
         return redirect(reverse_lazy("recommendations"))
 
@@ -95,7 +96,11 @@ def admin_profile_view(request):
             input_calc_const = form.cleaned_data["input_calc_const"]
             print(selected_option, input_books, input_users, input_calc_const)
             main.process_all_users(
-                input_users, input_calc_const, input_books, selected_option
+                request.user,
+                input_users,
+                input_calc_const,
+                input_books,
+                selected_option,
             )
             return render(request, template_name, {"form": form})
 
@@ -107,17 +112,26 @@ def admin_profile_view(request):
 def recommendations_view(request):
     template_name = "filtering/recommendations.html"
 
-    f = open("recs.json")
+    print("I'm:", request.user)
+    print("My books:", request.user.review.all())
+    books = []
 
-    data = json.load(f)
-    books = data[str(request.user.id)]
-    rec_books = []
+    if os.stat("recs.txt").st_size != 0:
+        f = open("recs.txt", "rb")
 
-    for book in books:
-        rec_books.append(Book.objects.get(id=book[0]))
-    print("recccc", rec_books)
-    f.close()
-    return render(request, template_name, {"books": rec_books})
+        data = pickle.load(f)
+
+        # for review in request.user.review.all():
+        #     print(f"{review}: {Book.objects.get(isbn=review.book_id).review.all()}")
+        # print(data)
+        if data:
+            if request.user.id in data:
+                books = data[request.user.id]
+                # for book in books:
+                #     rec_books.append(book[0])
+        # print("recccc", rec_books)
+        f.close()
+    return render(request, template_name, {"books": books})
 
     # return render(request, template_name)
 
