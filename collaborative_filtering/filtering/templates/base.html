@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Document{% endblock title %}</title>
+  {% load static %}
+
+  <link rel="stylesheet" href="{% static 'filtering/style.css' %}">
+</head>
+
+<body>
+  <header>
+
+  </header>
+  <div class="fl-container">
+    {% if request.user.is_authenticated %}
+    {% if not request.user.is_superuser %}
+    <div>
+
+      {% if request.path == '/recommendations/' %}
+      <button class="btn primary"><a href="{% url 'start' %}">Rate books</a></button>
+      {% else %}
+
+      {% if request.path == '/rate/' %}
+      <button class="btn primary"><a href="{% url 'recommendations' %}">Recommended books</a></button>
+      {% else %}
+
+      <button class="btn primary"><a href="{% url 'start' %}">Rate books</a></button>
+      <button class="btn primary"><a href="{% url 'recommendations' %}">Recommended books</a></button>
+
+      {% endif %} {% endif %}
+
+    </div>
+    {% endif %}
+    <button class="btn  logout"><a href="{% url 'logout' %}">Logout</a></button>
+
+
+  </div>
+
+  {% else %}
+  <div>
+    <button class="btn"><a href="{% url 'login' %}">Login</a></button>
+    <button class="btn"><a href="{% url 'register' %}">Signup</a></button>
+  </div>
+  {% endif %}
+
+  {% block content %}
+
+  {% endblock content %}
+
+</body>
+
+</html>

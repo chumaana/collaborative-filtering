@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}Sign up{%endblock title%}</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'filtering/style.css' %}">
+</head>
+
+
+
+{% block content %}
+
+<div class="container">
+    <form method="POST" novalidate class="card">
+        {% csrf_token %}
+        <h2 class="card_item">Sign Up</h2>
+        <div class="register_generated">{{ form }}</div>
+        <input class="card_item" type="submit" value="Register" />
+        <p class="text-center card_item">Already have an account? <a href="../login/">Log in</a></p>
+    </form>
+
+</div>
+{% endblock %}

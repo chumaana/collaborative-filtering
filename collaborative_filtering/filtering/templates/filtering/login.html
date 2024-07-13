@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}Login{%endblock title%}</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'filtering/style.css' %}">
+</head>
+
+{%block content%}
+<div class="container">
+    <form method="post" class="card" >
+        {% csrf_token %}
+        <h2 class="text-center card_item">Log in to your account</h2>
+        {% for field in form %}
+        <div class="card_item inputs">{{ field.label_tag }}
+            {{ field }}</div>
+        {% if field.errors %}
+        <small>{{ field.errors|striptags }}</small>
+        {% endif %}
+        {% endfor %}
+
+        <input type="submit" value="Login" class="btn btn-primary full-width card_item">
+        <!-- <hr class="card_item"> -->
+        <!-- <p class="text-center">Forgot your password <a href="#">Reset Password</a></p> -->
+        <p class="text-center card_item">Don't have an account? <a href="../register/">Join Now</a></p>
+    </form>
+</div>
+
+
+{%endblock content%}

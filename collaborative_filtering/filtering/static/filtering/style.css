@@ -1,0 +1,318 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 16px;
+}
+
+h1 {
+  margin: 0 auto;
+}
+
+/* .cntr-container {
+  margin: 0 auto;
+} */
+
+.fl-container {
+  display: flex;
+  /* /* justify-content: space-between;  */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.logout {
+  margin-left: auto;
+}
+.container {
+  display: flex;
+  /* justify-content: space-between; */
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.start_page_container,
+.recommendations_page_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+}
+h2 {
+  align-self: center;
+}
+
+.card {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+.card_item {
+  margin-top: 20px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+label {
+  margin-bottom: 5px;
+}
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  height: 36px;
+  border-radius: 4px;
+  padding-left: 12px;
+  font-size: 14px;
+  font-weight: normal;
+  border: 1px solid rgb(137, 151, 155);
+  transition: border-color 150ms ease-in-out 0s;
+  outline: none;
+  color: rgb(33, 49, 60);
+  background-color: rgb(255, 255, 255);
+  padding-right: 12px;
+}
+
+input[type="submit"] {
+  appearance: none;
+  background-color: #fafbfc;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #24292e;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 16px;
+  position: relative;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+input[type="submit"]:hover {
+  background-color: #f3f4f6;
+  text-decoration: none;
+  transition-duration: 0.1s;
+}
+
+.register_generated {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.register_generated label {
+  margin-bottom: 5px;
+  order: 0;
+}
+.helptext {
+  color: #575b60;
+  font-size: 12px;
+  order: 2;
+}
+.register_generated div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.register_generated input[type="text"] {
+  order: 1;
+}
+.register_generated ul {
+  margin-top: 3px;
+  padding-left: 10px;
+}
+
+/* .card p {
+  align-self: center;
+} */
+
+.start_page_container p,
+.recommendations_page_container p {
+  margin-top: 7px;
+}
+.block_books {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* margin: 50px 0 0 50px; */
+}
+
+.block_books_rec {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.rec {
+  min-width: 200px;
+}
+
+.book {
+  flex-grow: 1;
+  flex-basis: 0;
+  width: 100%;
+  /* height: 25vh; */
+  display: flex;
+  flex-direction: column;
+  --border-radius: 0.75rem;
+  --primary-color: #7257fa;
+  --secondary-color: #3c3852;
+  /* /width: 210px;  */
+  font-family: "Arial";
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  background: #f1f1f3;
+  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+  position: relative;
+  margin: 0 15px 20px;
+}
+
+.book_info {
+  /* display: flex; */
+  flex-direction: column;
+}
+.book_img {
+  align-self: center;
+  width: 200px;
+}
+.recommendations_page_container h4 {
+  margin-top: 15px;
+}
+
+.restart {
+  margin-top: 50px;
+  --primary: 255, 90, 120;
+  --secondary: 150, 50, 60;
+  width: 300px;
+  height: 250px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  outline: 10px solid rgb(var(--primary), 0.5);
+  border-radius: 100%;
+  position: relative;
+  transition: 0.3s;
+}
+
+.restart .back {
+  background: rgb(var(--secondary));
+  border-radius: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.restart .front {
+  background: linear-gradient(
+    0deg,
+    rgba(var(--primary), 0.6) 20%,
+    rgba(var(--primary)) 50%
+  );
+  box-shadow: 0 0.5em 1em -0.2em rgba(var(--secondary), 0.5);
+  border-radius: 100%;
+  position: absolute;
+  border: 1px solid rgb(var(--secondary));
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: inherit;
+  transform: translateY(-15%);
+  transition: 0.15s;
+  color: rgb(var(--secondary));
+}
+
+.restart:active .front {
+  transform: translateY(0%);
+  box-shadow: 0 0;
+}
+
+.star-wrap {
+  display: flex;
+}
+
+.btn {
+  appearance: none;
+  background-color: #fafbfc;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #24292e;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 16px;
+  position: relative;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+.book-author {
+  color: #8d88a2;
+}
+/* .book_info {
+  
+} */
+.btn > a {
+  color: inherit;
+  text-decoration: none;
+}
+.primary {
+  background-color: #f7f5ff;
+  border: 1px solid #bab5d7;
+  color: #7257fa;
+}
+
+.card {
+  justify-content: space-between;
+}
+
+.submit {
+  background-color: #7257fa;
+  color: white;
+}
+
+.settings {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}

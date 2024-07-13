@@ -1,0 +1,32 @@
+{%extends 'base.html'%}
+{%block title%}Recommendations{%endblock title%}
+{% if user.is_authenticated %}
+{%block content%}
+<div class="recommendations_page_container">
+  <h2>You may like it</h2>
+  <p>There are recomendations for you, based on your books' rates</p>
+
+  <!-- here will be rendering using for -->
+
+  <div class="block_books_rec">
+    {% if books %}
+    {%for book in books %}
+    <div class="book card rec">
+      <div class="book_img">
+        <img src="https://cdn-icons-png.flaticon.com/512/11804/11804690.png" alt="" width="100%">
+      </div>
+      <div class="book_info">
+        <h5 class="book-name">{{ book.name }}</h5>
+        <p class="book-author">{{ book.author }}</p>
+
+      </div>
+    </div>
+    {%endfor%}
+    {% else %}
+    <p>You don't have any rated books yet</p>
+    {% endif %}
+  </div>
+</div>
+
+{%endblock content%}
+{%endif%}
